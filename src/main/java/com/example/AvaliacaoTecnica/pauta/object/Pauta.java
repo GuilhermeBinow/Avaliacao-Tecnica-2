@@ -2,6 +2,7 @@ package com.example.AvaliacaoTecnica.pauta.object;
 
 import javax.persistence.*;
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "Pauta_info")
@@ -20,11 +21,28 @@ public class Pauta {
     private String StatusPauta;
     private Integer votoSim;
     private Integer votoNao;
+    private ArrayList<Associados> listaAssociados;
 
-//TODO implementar setters para votoSim e votoNao para somar 1 ao valor atual
 
+    public void somaVotoSim() {
+        this.votoSim = votoSim+1;
+    }
+
+    public void somaVotoNao() {
+        this.votoNao = votoNao+1;
+    }
 
     //Construtores, getters and setters
+
+
+    public ArrayList<Associados> getListaAssociados() {
+        return listaAssociados;
+    }
+
+    public void setListaAssociados(ArrayList<Associados> listaAssociados) {
+        this.listaAssociados = listaAssociados;
+    }
+
     public Pauta(Integer numeroDeAssociados, String nomeDaPauta, String statusPauta) {
         this.numeroDeAssociados = numeroDeAssociados;
         this.nomeDaPauta = nomeDaPauta;

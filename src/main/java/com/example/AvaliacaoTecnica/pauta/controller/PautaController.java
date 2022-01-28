@@ -1,10 +1,12 @@
 package com.example.AvaliacaoTecnica.pauta.controller;
 
+import com.example.AvaliacaoTecnica.pauta.object.Associados;
 import com.example.AvaliacaoTecnica.pauta.object.Pauta;
 import com.example.AvaliacaoTecnica.pauta.service.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.PreUpdate;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +59,18 @@ public class PautaController {
         pautaService.AberturaDePautas(id, tempo);
 
         return "Pauta Aberta com sucesso";
+    }
+
+    @PutMapping
+    @RequestMapping("/pautas/votar/")
+    public String AdicionaVotos(@RequestParam("IdPauta") Long idPauta,
+                              @RequestParam("IdAssociado") Long idAssociado,
+                              @RequestParam("Voto") String voto){
+
+        Associados associados= new Associados(idAssociado,voto);
+        pautaService.ContaVotoParaPautaAberta(idPauta,associados);
+
+        return "Voto Adicionado";
     }
 
     @DeleteMapping

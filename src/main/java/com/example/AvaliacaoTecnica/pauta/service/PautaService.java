@@ -6,7 +6,6 @@ import com.example.AvaliacaoTecnica.pauta.repository.PautaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,7 +71,7 @@ public class PautaService {
                     pautaObject.setStatusPauta("Aberta");
                     ZeraVotosDePautas(id);
                     pautaRepository.save(pautaObject);
-                    TemporizadordePauta(tempo, pautaObject);
+                    TemporizadorParaFecharPauta(tempo, pautaObject);
                 }
                 else{
                     throw new IllegalStateException("Pauta em andamento ou concluida");
@@ -89,15 +88,43 @@ public class PautaService {
         pautaObject.setVotoSim(0);
     }
 
-    public void ContaVotosParaPautaAberta(Long id){
+    public void ContaVotoParaPautaAberta(Long id, Associados associados){
         Pauta pautaObject= GetPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
         ArrayList<Associados> listaAssociados= new ArrayList<>();
+        if (pautaObject.getListaAssociados()==null)
+            pautaObject.setListaAssociados(listaAssociados);
+        if (pautaObject.getStatusPauta().equals("Aberta")){
+            if (!pautaObject.getListaAssociados().contains(associados)){
+
+                if (associados.getVoto().equals("Sim")){
+                    pautaObject.somaVotoSim();
+                    listaAssociados.add(associados);
+                    pautaObject.setListaAssociados(listaAssociados);
+                    pautaRepository.save(pautaObject);
+                }
+                else if (associados.getVoto().equals("Não") || associados.getVoto().equals("Nao")){
+                    pautaObject.somaVotoNao();
+                    listaAssociados.add(associados);
+                    pautaObject.setListaAssociados(listaAssociados);
+                    pautaRepository.save(pautaObject);
+                }
+                else {
+                    throw new IllegalStateException("Voto invalido");
+                }
+            }
+        else {
+                throw new IllegalStateException("Associado de ID "+ associados.getId()+ " ja votou");
+            }
+        }
+        else{
+            throw new IllegalStateException("Pauta indisponivel para votacao");
+        }
 
     }
 
-    public void TemporizadordePauta(int tempo, Pauta pauta){
+    public void TemporizadorParaFecharPauta(int tempo, Pauta pauta){
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
