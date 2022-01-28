@@ -1,4 +1,4 @@
-package pauta.object;
+package com.example.AvaliacaoTecnica.pauta.object;
 
 import javax.persistence.*;
 
