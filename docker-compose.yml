@@ -1,22 +1,23 @@
-version: '3.7'
+version: '3.8'
 
 services:
 
-  interviews:
+  avaliacao:
     build:
       context: .
       dockerfile: ./Dockerfile
-    image: interviews
+    container_name: avtecnica
+
     environment:
       - SPRING_PROFILES_ACTIVE=test,docker
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=postgres
+      - POSTGRES_DB=pauta
       - DB_HOSTNAME=postgres
+      - POSTGRES_PASSWORD=colognow
+      - POSTGRES_USER=admin
     ports:
-      - "9230:9230"
-      - "9233:9233"
+      - "8080:8080"
+      - "8083:8083"
     depends_on:
       - postgres
     links:
@@ -28,10 +29,11 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
       - POSTGRES_PORT=5432
-      - POSTGRES_DB=postgres
-    restart: unless-stopped
+      - POSTGRES_DB=pauta
+      - POSTGRES_PASSWORD=colognow
+      - POSTGRES_USER=admin
     volumes:
-      - ./mnt/postgresql:/var/lib/postgresql
+      - pgdata:/var/lib/postgresql/data
+volumes:
+   pgdata:

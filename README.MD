@@ -6,6 +6,9 @@ O sistema foi criado em Java SpringBoot, e possui o seu funcionamento da seguint
 Para Acessar as funcoes de API, será necessario utilizar a Postman collection na pasta do projeto.
 as instrucoes de uso das variaveis para a collection estao inseridas diretamente na pagina de uso
 
+#Requisitos de funcionamento
+A aplicação necessita que Postgresql esteja instalado e rodando na porta 5432 para ser executada, tanto quanto a criacao das tables pauta e pautateste para funcionar.
+Se a aplicação não funcionar via docker, é possivel roda-la como spring application localmente com todas as funcionalidades.
 # Funcionamento da Aplicação
 
 A aplicacao funciona como um controlador de votos para um sistema de pautas, cujo os dados não são perdidos ao reiniciar a aplicação.
