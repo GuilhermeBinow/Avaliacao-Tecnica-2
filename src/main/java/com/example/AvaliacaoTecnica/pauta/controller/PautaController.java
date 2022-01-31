@@ -6,7 +6,6 @@ import com.example.AvaliacaoTecnica.pauta.service.PautaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.PreUpdate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,7 +67,7 @@ public class PautaController {
                               @RequestParam("Voto") String voto){
 
         Associados associados= new Associados(idAssociado,voto);
-        pautaService.ContaVotoParaPautaAberta(idPauta,associados);
+        pautaService.ChecaSeVotanteNaoVotouNaPauta(idPauta,associados);
 
         return "Voto Adicionado";
     }
@@ -78,6 +77,12 @@ public class PautaController {
     public String ExcluiPautas(@RequestParam("Id") Long id){
         pautaService.ChecaPautaParaDeletar(id);
         return ("Pauta "+ id + " deletada com sucesso");
+    }
+
+    @GetMapping
+    @RequestMapping("/pautas/votos/")
+    public List<String> ContabilizarVotos(@RequestParam("Id") Long id){
+        return pautaService.RetornaVotosAposFechamentoDaPauta(id);
     }
 
 

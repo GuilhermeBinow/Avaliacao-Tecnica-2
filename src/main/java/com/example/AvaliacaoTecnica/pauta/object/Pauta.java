@@ -21,7 +21,6 @@ public class Pauta {
     private String StatusPauta;
     private Integer votoSim;
     private Integer votoNao;
-    private ArrayList<Associados> listaAssociados;
 
 
     public void somaVotoSim() {
@@ -34,14 +33,6 @@ public class Pauta {
 
     //Construtores, getters and setters
 
-
-    public ArrayList<Associados> getListaAssociados() {
-        return listaAssociados;
-    }
-
-    public void setListaAssociados(ArrayList<Associados> listaAssociados) {
-        this.listaAssociados = listaAssociados;
-    }
 
     public Pauta(Integer numeroDeAssociados, String nomeDaPauta, String statusPauta) {
         this.numeroDeAssociados = numeroDeAssociados;

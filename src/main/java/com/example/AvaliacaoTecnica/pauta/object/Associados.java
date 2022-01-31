@@ -2,17 +2,31 @@ package com.example.AvaliacaoTecnica.pauta.object;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name = "Associados")
 public class Associados {
 
-    private Long id;
+
+    private Long idPauta;
+
+    @Id
+    private Long idAssociado;
 
     private String voto;
 
     public Associados() {
     }
 
-    public Associados(Long id, String voto) {
-        this.id = id;
+    public Long getIdAssociado() {
+        return idAssociado;
+    }
+
+    public void setIdAssociado(Long idAssociado) {
+        this.idAssociado = idAssociado;
+    }
+
+    public Associados(Long idAssociado, String voto) {
+        this.idAssociado = idAssociado;
         this.voto = voto;
     }
 
@@ -24,11 +38,11 @@ public class Associados {
         this.voto = voto;
     }
 
-    public Long getId() {
-        return id;
+    public Long getIdPauta() {
+        return idPauta;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setIdPauta(Long idPauta) {
+        this.idPauta = idPauta;
     }
 }
