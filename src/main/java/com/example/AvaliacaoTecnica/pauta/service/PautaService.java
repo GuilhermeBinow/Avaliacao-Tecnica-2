@@ -63,6 +63,12 @@ public class PautaService {
 
     public void deletarPauta(Long id){
         pautaRepository.deleteById(id);
+        List<Associados> associadosObject= associadosRepository.findAll();
+        for (Associados valor: associadosObject){
+            if ((Objects.equals(valor.getIdPauta(), id))){
+                associadosRepository.deleteById(valor.getIdAssociado());
+            }
+        }
     }
 
     public boolean checarPautaExiste(Long id){
@@ -89,8 +95,6 @@ public class PautaService {
                 }
                 return pautaObject;
             }
-
-
 
     public void zeraVotosDePautas(Long id){
         Pauta pautaObject= getPautaPorID(id)
@@ -168,6 +172,7 @@ public class PautaService {
         );
 
     }
+
     public void fechaPauta(Long id){
         pautaTemporaria.setStatusPauta("Concluida");
         pautaRepository.save(pautaTemporaria);
