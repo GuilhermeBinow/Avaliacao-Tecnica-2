@@ -1,0 +1,132 @@
+{
+	"info": {
+		"_postman_id": "8295088a-8f3e-4d2e-a729-74ba4ab99c1e",
+		"name": "Avaliacao Tecnica Pautas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Olá",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Verificar Pautas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Verificar Pauta Especifica",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Contabilizar Votos da Pauta",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastrar Pauta",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pauta/cadastro/",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pauta",
+						"cadastro",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Pauta",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pautas/excluir?Id=4",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pautas",
+						"excluir"
+					],
+					"query": [
+						{
+							"key": "Id",
+							"value": "4",
+							"description": "Id da pauta a ser deletada"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Abre Pauta",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/pautas/iniciar/?Id=2&TempoDeVotacao=3",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"pautas",
+						"iniciar",
+						""
+					],
+					"query": [
+						{
+							"key": "Id",
+							"value": "2",
+							"description": "ID da Pauta a abrir"
+						},
+						{
+							"key": "TempoDeVotacao",
+							"value": "3",
+							"description": "Tempo em Minutos para a pauta ficar aberta\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Adiciona Voto a Pauta Aberta",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": null
+			},
+			"response": []
+		}
+	]
+}

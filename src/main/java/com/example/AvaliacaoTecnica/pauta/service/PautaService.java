@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-//TODO trocar invalidstate por erro de http request ou afins
+
 
 @Service
 public class PautaService {
@@ -30,14 +30,17 @@ public class PautaService {
     }
 
     public List<Pauta> getListaDePautas(){
+        logger("Get lista de pautas ");
         return pautaRepository.findAll();
     }
 
     public Optional<Pauta> getPautaPorID(Long id){
+        logger("Get Pauta por ID");
         return pautaRepository.findById(id);
     }
 
     public Pauta cadastrarPauta(int numeroAssociados, String nomePauta){
+        logger("Cadastro de Pautas");
         Pauta novaPauta= new Pauta(
                 numeroAssociados,
                 nomePauta,
@@ -49,8 +52,8 @@ public class PautaService {
         return novaPauta;
     }
 
-    public void checaPautaParaDeletar(Long id){
-
+    public boolean checaPautaParaDeletar(Long id){
+        logger("Checar Pauta antes de deletar");
         if (!checarPautaExiste(id)){
             throw new IllegalStateException(
                     ("Pauta "+ id + " inexistente")
@@ -58,10 +61,12 @@ public class PautaService {
         }
         else{
             deletarPauta(id);
+            return true;
         }
     }
 
     public void deletarPauta(Long id){
+        logger("Deletar Pauta");
         pautaRepository.deleteById(id);
         List<Associados> associadosObject= associadosRepository.findAll();
         for (Associados valor: associadosObject){
@@ -72,11 +77,12 @@ public class PautaService {
     }
 
     public boolean checarPautaExiste(Long id){
+        logger("Checar existencia da Pauta");
         return pautaRepository.existsById(id);
     }
 
     public Pauta aberturaDePautas(Long id, int tempo){
-
+        logger("Checar se Pauta pode ser aberta");
             //verifica se a pauta existe, se está fechada e inicia o timer para fecha-la após o tempo determinado no request
 
             Pauta pautaObject= getPautaPorID(id)
@@ -97,6 +103,7 @@ public class PautaService {
             }
 
     public void zeraVotosDePautas(Long id){
+        logger("zerar votos da pauta antes de abrir");
         Pauta pautaObject= getPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
@@ -104,8 +111,8 @@ public class PautaService {
         pautaObject.setVotoSim(0);
     }
 
-    public void checaSeVotanteNaoVotouNaPauta(Long id, Associados associadoVotando){
-
+    public boolean checaSeVotanteNaoVotouNaPauta(Long id, Associados associadoVotando){
+        logger("checar se associado já votou na pauta inserida");
         Pauta pautaObject= getPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
@@ -126,13 +133,14 @@ public class PautaService {
                 }
             }
                 associaContagemDeVotos(pautaObject,associadoVotando);
-
+                return true;
         }
         else
             throw new IllegalStateException("Pauta indisponivel para voto");
     }
 
     public void associaContagemDeVotos(Pauta pautaObject, Associados associadoVotando){
+        logger("adicionar o voto à pauta");
         if (associadoVotando.getVoto().equalsIgnoreCase("Sim")){
             pautaObject.somaVotoSim();
             pautaTemporaria=pautaObject;
@@ -153,6 +161,7 @@ public class PautaService {
     }
 
     public boolean comparaStatusPauta(Pauta pauta, String status){
+        logger("comparar se status da pauta é X");
         if(pauta.getStatusPauta().equals(status))
             return true;
 
@@ -161,6 +170,7 @@ public class PautaService {
     }
 
     public void temporizadorParaFecharPauta(int tempo, Long id){
+        logger("fechar automaticamente a pauta apos periodo de tempo");
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -174,11 +184,13 @@ public class PautaService {
     }
 
     public void fechaPauta(Long id){
+        logger("fechar pauta");
         pautaTemporaria.setStatusPauta("Concluida");
         pautaRepository.save(pautaTemporaria);
     }
 
     public List<String> retornaVotosAposFechamentoDaPauta(Long id){
+        logger("retornar votos após pauta ser concluida");
         Pauta pautaObject= getPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta de Id "+id +" não existe"));
 
@@ -190,6 +202,11 @@ public class PautaService {
         listaDeVotos.add("Votos Não: " +pautaObject.getVotoNao());
         return listaDeVotos;
 
+    }
+
+    public void logger(String chamado){
+        System.out.println("-------------------------------------------O Método para "+ chamado+ " foi chamado----------------------------------------");
+        return;
     }
 
 }

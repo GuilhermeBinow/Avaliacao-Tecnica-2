@@ -26,7 +26,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class PautaServiceTest {
+public class PautaServiceTesting {
 
     @Mock
     private PautaRepository pautaRepository;
@@ -100,7 +100,7 @@ public class PautaServiceTest {
     }
 
     @Test
-    void aberturaDePautasTest(){
+    void aberturaDePautasTest() throws InterruptedException {
         //given
         Pauta novaPauta= new Pauta(
                 1,
@@ -115,6 +115,7 @@ public class PautaServiceTest {
 
         //then
 
+        Thread.sleep(1000);
         verify(pautaRepository, times(2)).save(novaPauta);
     }
 
