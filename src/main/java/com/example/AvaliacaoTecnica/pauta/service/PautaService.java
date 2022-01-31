@@ -29,15 +29,15 @@ public class PautaService {
         this.associadosRepository = associadosRepository;
     }
 
-    public List<Pauta> GetListaDePautas(){
+    public List<Pauta> getListaDePautas(){
         return pautaRepository.findAll();
     }
 
-    public Optional<Pauta> GetPautaPorID(Long id){
+    public Optional<Pauta> getPautaPorID(Long id){
         return pautaRepository.findById(id);
     }
 
-    public void CadastrarPauta(int numeroAssociados, String nomePauta){
+    public Pauta cadastrarPauta(int numeroAssociados, String nomePauta){
         Pauta novaPauta= new Pauta(
                 numeroAssociados,
                 nomePauta,
@@ -46,60 +46,63 @@ public class PautaService {
         );
         pautaRepository.save(novaPauta);
 
+        return novaPauta;
     }
 
-    public void ChecaPautaParaDeletar(Long id){
+    public void checaPautaParaDeletar(Long id){
 
-        if (!ChecarPautaExiste(id)){
+        if (!checarPautaExiste(id)){
             throw new IllegalStateException(
                     ("Pauta "+ id + " inexistente")
             );
         }
         else{
-            DeletarPauta(id);
+            deletarPauta(id);
         }
     }
 
-    public void DeletarPauta(Long id){
+    public void deletarPauta(Long id){
         pautaRepository.deleteById(id);
     }
 
-    public boolean ChecarPautaExiste(Long id){
+    public boolean checarPautaExiste(Long id){
         return pautaRepository.existsById(id);
     }
 
-    public void AberturaDePautas(Long id, int tempo){
+    public Pauta aberturaDePautas(Long id, int tempo){
 
             //verifica se a pauta existe, se está fechada e inicia o timer para fecha-la após o tempo determinado no request
 
-            Pauta pautaObject= GetPautaPorID(id)
+            Pauta pautaObject= getPautaPorID(id)
                     .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
 
                 if (pautaObject.getStatusPauta().equals("Fechada")){
                     pautaObject.setStatusPauta("Aberta");
-                    ZeraVotosDePautas(id);
+                    zeraVotosDePautas(id);
                     pautaRepository.save(pautaObject);
-                    TemporizadorParaFecharPauta(tempo, pautaObject.getId());
+                    pautaTemporaria=pautaObject;
+                    temporizadorParaFecharPauta(tempo, pautaObject.getId());
                 }
                 else{
                     throw new IllegalStateException("Pauta em andamento ou concluida");
                 }
+                return pautaObject;
             }
 
 
 
-    public void ZeraVotosDePautas(Long id){
-        Pauta pautaObject= GetPautaPorID(id)
+    public void zeraVotosDePautas(Long id){
+        Pauta pautaObject= getPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
         pautaObject.setVotoNao(0);
         pautaObject.setVotoSim(0);
     }
 
-    public void ChecaSeVotanteNaoVotouNaPauta(Long id, Associados associadoVotando){
+    public void checaSeVotanteNaoVotouNaPauta(Long id, Associados associadoVotando){
 
-        Pauta pautaObject= GetPautaPorID(id)
+        Pauta pautaObject= getPautaPorID(id)
                 .orElseThrow(() -> new IllegalStateException("Pauta Inexistente"));
 
         if (associadoVotando.getIdAssociado()>pautaObject.getNumeroDeAssociados())
@@ -108,7 +111,7 @@ public class PautaService {
         List<Associados> associadosObject= associadosRepository.findAll();
         boolean existeNaLista= false;
 
-        if(ComparaStatusPauta(pautaObject,"Aberta")){
+        if(comparaStatusPauta(pautaObject,"Aberta")){
             for (Associados valor: associadosObject){
                 if ((Objects.equals(valor.getIdPauta(), pautaObject.getId()) &&
                         Objects.equals(valor.getIdAssociado(), associadoVotando.getIdAssociado()))){
@@ -118,14 +121,14 @@ public class PautaService {
                     throw new IllegalStateException("Votante ja teve voto registrado");
                 }
             }
-                AssociaContagemDeVotos(pautaObject,associadoVotando);
+                associaContagemDeVotos(pautaObject,associadoVotando);
 
         }
         else
             throw new IllegalStateException("Pauta indisponivel para voto");
     }
 
-    public void AssociaContagemDeVotos(Pauta pautaObject, Associados associadoVotando){
+    public void associaContagemDeVotos(Pauta pautaObject, Associados associadoVotando){
         if (associadoVotando.getVoto().equalsIgnoreCase("Sim")){
             pautaObject.somaVotoSim();
             pautaTemporaria=pautaObject;
@@ -145,7 +148,7 @@ public class PautaService {
             throw new IllegalStateException("Voto Invalido");
     }
 
-    public boolean ComparaStatusPauta(Pauta pauta, String status){
+    public boolean comparaStatusPauta(Pauta pauta, String status){
         if(pauta.getStatusPauta().equals(status))
             return true;
 
@@ -153,28 +156,28 @@ public class PautaService {
             return false;
     }
 
-    public void TemporizadorParaFecharPauta(int tempo, Long id){
+    public void temporizadorParaFecharPauta(int tempo, Long id){
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
                     public void run() {
-                        FechaPauta(id);
+                        fechaPauta(id);
                     }
                 },
                 tempo
         );
 
     }
-    public void FechaPauta(Long id){
+    public void fechaPauta(Long id){
         pautaTemporaria.setStatusPauta("Concluida");
         pautaRepository.save(pautaTemporaria);
     }
 
-    public List<String> RetornaVotosAposFechamentoDaPauta(Long id){
-        Pauta pautaObject= GetPautaPorID(id)
-                .orElseThrow(() -> new IllegalStateException("Pauta de Id "+id +" não existe"));;
+    public List<String> retornaVotosAposFechamentoDaPauta(Long id){
+        Pauta pautaObject= getPautaPorID(id)
+                .orElseThrow(() -> new IllegalStateException("Pauta de Id "+id +" não existe"));
 
-        if (!ComparaStatusPauta(pautaObject,"Concluida"))
+        if (!comparaStatusPauta(pautaObject,"Concluida"))
             throw new IllegalStateException("Pauta ainda não foi concluida");
 
         List<String> listaDeVotos= new ArrayList<>();

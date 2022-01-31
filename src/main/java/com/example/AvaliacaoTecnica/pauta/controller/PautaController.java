@@ -28,20 +28,20 @@ public class PautaController {
 
     @GetMapping(path = "pautas")
     public List<Pauta> ChecarPautas(){
-        return pautaService.GetListaDePautas();
+        return pautaService.getListaDePautas();
     }
 
     @GetMapping
     @RequestMapping("pauta/")
     public Optional<Pauta> ChecarPauta(@RequestParam("Id")Long id){
-        return pautaService.GetPautaPorID(id);
+        return pautaService.getPautaPorID(id);
     }
 
     @PostMapping
     @RequestMapping("pautas/cadastro/")
     public String CadastrarPauta(@RequestParam("NumeroAssociados")Integer numeroAssociados,
                                  @RequestParam("NomePauta") String nomePauta){
-        pautaService.CadastrarPauta(numeroAssociados,nomePauta);
+        pautaService.cadastrarPauta(numeroAssociados,nomePauta);
         return ("Pauta "+nomePauta+ " criada com sucesso.");
     }
 
@@ -55,7 +55,7 @@ public class PautaController {
         else
             tempo= tempo*60000;
 
-        pautaService.AberturaDePautas(id, tempo);
+        pautaService.aberturaDePautas(id, tempo);
 
         return "Pauta Aberta com sucesso";
     }
@@ -67,7 +67,7 @@ public class PautaController {
                               @RequestParam("Voto") String voto){
 
         Associados associados= new Associados(idAssociado,voto);
-        pautaService.ChecaSeVotanteNaoVotouNaPauta(idPauta,associados);
+        pautaService.checaSeVotanteNaoVotouNaPauta(idPauta,associados);
 
         return "Voto Adicionado";
     }
@@ -75,14 +75,14 @@ public class PautaController {
     @DeleteMapping
     @RequestMapping("/pautas/excluir")
     public String ExcluiPautas(@RequestParam("Id") Long id){
-        pautaService.ChecaPautaParaDeletar(id);
+        pautaService.checaPautaParaDeletar(id);
         return ("Pauta "+ id + " deletada com sucesso");
     }
 
     @GetMapping
     @RequestMapping("/pautas/votos/")
     public List<String> ContabilizarVotos(@RequestParam("Id") Long id){
-        return pautaService.RetornaVotosAposFechamentoDaPauta(id);
+        return pautaService.retornaVotosAposFechamentoDaPauta(id);
     }
 
 
