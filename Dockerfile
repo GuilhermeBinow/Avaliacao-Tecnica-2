@@ -1,0 +1,3 @@
+FROM openjdk
+ENV APP_HOME=/usr/app
+WORKDIR $APP_HOME

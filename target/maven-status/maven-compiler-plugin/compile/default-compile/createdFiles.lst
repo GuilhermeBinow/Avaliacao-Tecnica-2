@@ -1,7 +1,0 @@
-pauta/object/Associados.class
-pauta/object/Pauta.class
-pauta/controller/PautaController.class
-pauta/config/PautaConfig.class
-com/example/AvaliacaoTecnica/AvaliacaoTecnicaApplication.class
-pauta/repository/PautaRepository.class
-pauta/service/PautaService.class

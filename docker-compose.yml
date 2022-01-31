@@ -1,0 +1,37 @@
+version: '3.7'
+
+services:
+
+  interviews:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: interviews
+    environment:
+      - SPRING_PROFILES_ACTIVE=test,docker
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+      - DB_HOSTNAME=postgres
+    ports:
+      - "9230:9230"
+      - "9233:9233"
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=postgres
+    restart: unless-stopped
+    volumes:
+      - ./mnt/postgresql:/var/lib/postgresql
